@@ -9,21 +9,21 @@ fi
 
 
 # -------  Set Parameters   --------
-ks=( 0 1000 5000 )
-rs=( "2 1" "2" )
-dfs=( 1 5 )
+ks=( 0 )
+rs=( "2 1" )
+alphas=( 0.57 )
 
 
 # -------  Qrun   --------
 mkdir -p runs/
 
 for k in "${ks[@]}";do
-    for r in "${rs[@]}";do
-        for df in "${dfs[@]}";do
-            time python nist/nist.py --k ${k} --R ${r} --df ${df}
-            printf '\n'
-        done
-    done
+for r in "${rs[@]}";do
+for alpha in "${alphas[@]}";do
+    time python nist/nist.py --k ${k} --R ${r} --alpha ${alpha}
+    printf '\n'
+done
+done
 done
 
 
@@ -33,7 +33,7 @@ function score() {
     nist/trec_eval -c -M1000 -m all_trec nist/data/qrels_test.txt ${1} | grep 'map                   	all'
 }
 
-for f in runs/*.txt;do
+for f in runs/*k0*.txt;do
     echo $f
     echo "--------------------------------"
     score $f
